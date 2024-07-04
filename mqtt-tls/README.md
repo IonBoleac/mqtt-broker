@@ -1,7 +1,11 @@
 # Run a MQTT Brocker over TLS
-|  |  |
-| --- | --- |
-|![STICH](../STICH.ico) | In this directory there is a script that allows to run a MQTT Brocker over TLS in a Docker container. The script is written in bash and it's possible to manage the broker by using the script.|
+<table>
+  <tr>
+    <td><img src="../STICH.ico" alt="STICH"></td>
+    <td>In this directory there is a script that allows to run a MQTT Brocker over TLS in a Docker container. The script is written in bash and it's possible to manage the broker by using the script.</a> project.</td>
+  </tr>
+</table>
+
 
 ## Folder Structure
 ```

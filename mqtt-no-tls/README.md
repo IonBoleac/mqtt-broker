@@ -1,10 +1,11 @@
 # Docker container with MQTT
-|  |  |
-| --- | --- |
-|![STICH](../STICH.ico) | This is a docker container for running a normal MQTT broker. The MQTT broker is based on the [Eclipse Mosquitto](https://mosquitto.org/) project.|
+<table>
+  <tr>
+    <td><img src="../STICH.ico" alt="STICH"></td>
+    <td>This is a docker container for running a normal MQTT broker. The MQTT broker is based on the <a href="https://mosquitto.org/">Eclipse Mosquitto</a> project.</td>
+  </tr>
+</table>
 
-- The MQTT broker is running on the port 1883 and to access it isn't necessary any authentication and certificates.
-- The MQTT broker is running on the port 51883 (due to the 1883 port is already used by the upon MQTT broker) and to access it is necessary the username and password.
 
 ## Starting
 To run the container, you can use the following command that configure the environment with the necessary directory:
