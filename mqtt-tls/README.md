@@ -1,6 +1,6 @@
 # Run a MQTT Brocker over TLS
-<table>
-  <tr>
+<table style="border-collapse: collapse; border: none;">
+  <tr style="border: none;">
     <td><img src="../STICH.ico" alt="STICH"></td>
     <td>In this directory there is a script that allows to run a MQTT Brocker over TLS in a Docker container. The script is written in bash and it's possible to manage the broker by using the script.</a> project.</td>
   </tr>

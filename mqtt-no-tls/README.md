@@ -1,6 +1,6 @@
 # Docker container with MQTT
-<table>
-  <tr>
+<table style="border-collapse: collapse; border: none;">
+  <tr style="border: none;">
     <td><img src="../STICH.ico" alt="STICH"></td>
     <td>This is a docker container for running a normal MQTT broker. The MQTT broker is based on the <a href="https://mosquitto.org/">Eclipse Mosquitto</a> project.</td>
   </tr>
