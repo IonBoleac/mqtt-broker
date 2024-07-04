@@ -175,7 +175,13 @@ function init {
 # Clean only the mounted volumes without removing the certificates
 function clean {
     log "clean - Removing the $MOUNTED_VOLUMES_TOP directories."
-    sudo rm -rf $MOUNTED_VOLUMES_TOP
+    # Check if the container is running
+    check_docker_container
+    if [ "$?" -ne '0' ]; then
+        log "clean - The container $DOCKER_CONTAINER_NAME is running. Stop the container before cleaning the mounted volumes" $ERROR
+    else
+        sudo rm -rf $MOUNTED_VOLUMES_TOP
+    fi
 }
 
 # Deep clean the application removing all the certificates and the mounted volumes
@@ -187,7 +193,11 @@ function deep_clean {
         stop
     fi
 
-    sudo rm -rf $MOUNTED_VOLUMES_TOP
+    # Check if there are mounted volumes
+    if [ -d "$MOUNTED_VOLUMES_TOP" ]; then
+        clean
+    fi
+
     # Deleting specific file types in ca, broker, and clients directories
     sudo find mqtt/certs/ca/ -type f \( -name "*.crt" -o -name "*.key" -o -name "*.srl" \) -exec rm -f {} +
     sudo find mqtt/certs/broker/ -type f \( -name "*.crt" -o -name "*.key" -o -name "*.csr" \) -exec rm -f {} +
@@ -218,9 +228,15 @@ function generate_client_certificates {
 
     # Check if the user is already in the password file
     #if_exist_user "$mqtt_user"
+    # Check if the validity is set or set the default valu and after this check if is a number
+    validity=${validity:-365}
+    if ! [[ "$validity" =~ ^[0-9]+$ ]]; then
+        log "generate_client_certificates_CLI - Validity isn't in correct format. Must be a non-null integer." $ERROR
+        exit 1
+    fi
 
     # Check if the subject is in the correct format
-    log "generate_client_certificates - Creating Client: ${BASE_NAME} with validity: $validity days" 
+    log "generate_client_certificates - Creating Client: ${mqtt_user} with validity: $validity days" 
     validate_dn "$summary"
     if [ "$?" -eq '1' ]; then
         generate_client_certificates_CLI "$mqtt_user" "$mqtt_password" "$summary" "$validity"
