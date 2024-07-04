@@ -129,9 +129,10 @@ validate_dn() {
     
     if [[ $dn =~ $pattern ]]; then
         log "validate_dn - Valid DN: $dn"
+        return 1
     else
         log "validate_dn - Invalid DN: $dn" $ERROR
-        exit 1
+        return 0
     fi
 }
 
@@ -182,7 +183,7 @@ function deep_clean {
     log "deep_clean - Deep cleaning the application removing all the certificates and the mounted volumes and eventualy delete the broker."
 
     check_docker_container
-    if [ "$?" -eq '0' ]; then
+    if [ "$?" -ne '0' ]; then
         stop
     fi
 
@@ -218,31 +219,14 @@ function generate_client_certificates {
     # Check if the user is already in the password file
     #if_exist_user "$mqtt_user"
 
-    # Check if the validity is set or set the default valu and after this check if is a number
-    validity=${validity:-365}
-    if ! [[ "$validity" =~ ^[0-9]+$ ]]; then
-        log "generate_client_certificates - Validity isn't in correct format. Must be a non-null integer." $ERROR
-        exit 1
-    fi
-
-    # Create the directorie for the client
-    mkdir -p mqtt/certs/clients/"$mqtt_user"
-
-    # Set the base name for the certificates the same as the mqtt_user
-    local BASE_NAME="mqtt/certs/clients/$mqtt_user/$mqtt_user"
+    # Check if the subject is in the correct format
     log "generate_client_certificates - Creating Client: ${BASE_NAME} with validity: $validity days" 
-
-    # Generate RSA key
-    openssl genrsa -out "${BASE_NAME}.key" 
-
-    # Create CSR
-    openssl req -new -key "${BASE_NAME}.key" -out "${BASE_NAME}.csr" -subj "${summary}" || openssl req -in "${BASE_NAME}.csr" -noout -text
-
-    # Sign the certificate
-    openssl x509 -req -CA $CA_CRT -CAkey $CA_KEY -CAcreateserial -in "${BASE_NAME}.csr" -out "${BASE_NAME}.crt" || openssl x509 -in "${BASE_NAME}.crt" -days "$validity" -text -noout
-
-    # Update MQTT user passwords
-    docker run -it --rm -v "$(pwd)"/$MOUNTED_VOLUMES_TOP/mqtt/config:/mosquitto/config $DOCKER_IMAGE mosquitto_passwd -b /mosquitto/config/passwords.txt "$mqtt_user" "$mqtt_password"
+    validate_dn "$summary"
+    if [ "$?" -eq '1' ]; then
+        generate_client_certificates_CLI "$mqtt_user" "$mqtt_password" "$summary" "$validity"
+    else 
+        log "generate_client_certificates - The subject is not in the correct format" $ERROR
+    fi
 }
 
 # Create the certificates for the MQTT clients from the command line in the forma: username password subject
@@ -287,6 +271,10 @@ function generate_client_certificates_CLI {
 
 # Create the certificates for the MQTT broker, the CA and the existed clients
 function create_certs {
+    # Check if the CN's broker and CA are in the correct format
+    validate_dn "$SUBJECT_ROOT_CA"
+    validate_dn "$SUBJECT_SERVER"
+
     # ================== CA ==================
     log "create_certs - ===Creating CA certificate===" $EVENT
 
@@ -361,7 +349,6 @@ function start {
     local running
     check_docker_container
     running=$?
-    log "Running: $running"
     if [ "$running" -eq '0' ]; then
         check_mounted_volumes
         nohup docker compose up -d &
@@ -417,10 +404,14 @@ function user_add_from_CLI {
     if_exist_user "$MQTT_USER"
 
     validate_dn "$MQTT_SUBJECT"
-    generate_client_certificates_CLI "$MQTT_USER" "$MQTT_PASSWORD" "$MQTT_SUBJECT" "$MQTT_VALIDITY"
-    #set_permissions_and_ownership
-    sleep 1
-    restart
+    if [ "$?" -eq '1' ]; then
+        generate_client_certificates_CLI "$MQTT_USER" "$MQTT_PASSWORD" "$MQTT_SUBJECT" "$MQTT_VALIDITY"
+        #set_permissions_and_ownership
+        sleep 1
+        restart
+    else 
+        log "user_add_from_CLI - The subject is not in the correct format" $ERROR
+    fi
 }
 
 # Usage: ./init.sh <path/to/file.client>. Add user from a .client file with the format: summary;mqtt_user;mqtt_password[;validity].
