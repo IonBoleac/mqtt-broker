@@ -1,0 +1,11 @@
+services:
+  mqtt:
+    container_name: mqtt-tls
+    image: eclipse-mosquitto:2.0-openssl
+    volumes:
+      - ./mounted_volumes/mqtt/config:/mosquitto/config:rw
+      - ./mounted_volumes/mqtt/data:/mosquitto/data:rw
+    ports:
+      - "8883:8883"
+
+  
