@@ -1,8 +1,8 @@
-# MQTT Brocker with and without TLS
+# MQTT Broker with and without TLS
 [![CC BY 4.0][cc-by-shield]][cc-by]
 ![MQTT Broker](STICH.jpeg)
 
-In this repo there are some examples of how to run the MQTT Broker with and without TLS in a Linux-based OS. The MQTT Broker is the Mosquitto Broker. The examples are in two different directories: `mqtt-tls` and `mqtt-no-tls`. The `mqtt-tls` directory contains the files that are necessary to run the MQTT Broker with TLS. The `mqtt-no-tls` directory contains the files that are necessary to run the MQTT Broker without TLS. This last directory is useful to run the MQTT Broker with and without authentication.
+In this repo are some examples of running the MQTT Broker with and without TLS in a Linux-based OS. The MQTT Broker is the Mosquitto Broker. The examples are in two directories: `mqtt-tls` and `mqtt-no-tls`. The `mqtt-tls` directory contains the files necessary to run the MQTT Broker with TLS. The `mqtt-no-tls` directory contains the files necessary to run the MQTT Broker without TLS. This last directory is useful to run the MQTT Broker with and without authentication.
 
 | **File** | **Description** |
 | --- | --- |
