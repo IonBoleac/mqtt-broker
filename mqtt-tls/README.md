@@ -1,9 +1,9 @@
-# Run a MQTT Brocker over TLS
+# Run a MQTT Broker over TLS
 [![CC BY 4.0][cc-by-shield]][cc-by]
 <table style="border-collapse: collapse; border: none;">
   <tr style="border: none;">
     <td><img src="../STICH.ico" alt="STICH"></td>
-    <td>In this directory there is a script that allows to run a MQTT Brocker over TLS in a Docker container. The script is written in bash and it's possible to manage the broker by using the script.</a> project.</td>
+    <td>In this directory there is a script that allows to run an MQTT Broker over TLS in a Docker container. The script is written in bash and it's possible to manage the broker by using the script.</a> project.</td>
   </tr>
 </table>
 
@@ -39,7 +39,7 @@ The script `init.sh` has the following options:
 | [init](#init-the-environment)                                 | Initialize the environment|
 | [clean](#clean-the-application)                               | Clean only the mounted volumes without removing the certificates|
 | [deep_clean](#clean-the-application)                          | Deep clean the application removing all the certificates and the mounted volumes|
-| [create_certs](#create-the-certificates)                      | Create the certificates for the MQTT broker, the CA and the existed clients|
+| [create_certs](#create-the-certificates)                      | Create the certificates for the MQTT broker, the CA and the existing clients|
 | [clean_start](#start-the-application)                         | Start the application with a clean start that cleans the mounted volumes, initializes the environment, creates the certificates and starts the application|
 | [start](#start-the-application)                               | Start the application only with the docker compose up command. The certificates must be created before.|
 | [stop](#clean-the-application)                                | Stop the application with the docker compose down command that remove the container and the network|
@@ -68,22 +68,22 @@ To initialize the environment, run the following command:
 This command will create the necessary directories to run the application. 
 
 ## Create the certificates
-To create the certificates for the MQTT Brocker, the CA and the clients, run the following command:
+To create the certificates for the MQTT Broker, the CA and the clients, run the following command:
 
 ```bash
 ./init.sh create_certs
 ```
 
-This command will create the certificates for the MQTT Brocker, the CA and the clients. The certificates will be saved in the directory `mqtt/certs/`. The certificates for the MQTT Brocker will be saved in the directory `mqtt/certs/brokers/`, the CA certificates will be saved in the directory `mqtt/certs/ca/` and the client certificates will be saved in the directory `mqtt/certs/clients/`.
+This command will create the certificates for the MQTT Broker, the CA and the clients. The certificates will be saved in the directory `mqtt/certs/`. The certificates for the MQTT Broker will be saved in the directory `mqtt/certs/brokers/`, the CA certificates will be saved in the directory `mqtt/certs/ca/` and the client certificates will be saved in the directory `mqtt/certs/clients/`.
 
 ## Start the application
-To semplify the process of running a MQTT Brocker over TLS, is used the docker image `eclipse-mosquitto:2.0-openssl` that is a MQTT Brocker. The image is available on the Docker Hub at the following link: [eclipse-mosquitto](https://hub.docker.com/_/eclipse-mosquitto). To start the application, it's necessary to have Docker installed on the machine. If it dosen't have Docker installed, it's possible download the application from the official website: [Docker](https://www.docker.com/). After installing Docker, run the following command to start the MQTT Brocker over TLS:
+To simplify the process of running an MQTT Broker over TLS is used the docker image `eclipse-mosquitto:2.0-openssl` is a MQTT Broker. The image is available on the Docker Hub at the following link: [eclipse-mosquitto](https://hub.docker.com/_/eclipse-mosquitto). To start the application, it's necessary to have Docker installed on the machine. If it doesn't have Docker installed, it's possible to download the application from the official website: [Docker](https://www.docker.com/). After installing Docker, run the following command to start the MQTT Broker over TLS:
 
 ```bash
 ./init.sh clean_start
 ```
 
-This command will initialize the environment, create the certificates for the MQTT Brocker, the CA and the clients, and start the application.
+This command will initialize the environment, create the certificates for the MQTT Broker, the CA and the clients, and start the application.
 
 If it's necessary to start the application without cleaning the mounted volumes, run the following command:
 
@@ -91,53 +91,53 @@ If it's necessary to start the application without cleaning the mounted volumes,
 ./init.sh start
 ```
 
-In the script there are some variables that must be set with the own data for the TLS certificate.
+In the script, some variables must be set with the own data for the TLS certificate.
 
-The script will create a container with the MQTT Brocker and the necessary configuration to run the application. The MQTT Brocker will be available on the port `8883` and the TLS certificate will be available on the path [./mqtt/certs/](./mqtt/certs/). The script will also create a network to connect the container with the MQTT Brocker and the client.
+The script will create a container with the MQTT Broker and the necessary configuration to run the application. The MQTT Broker will be available on port `8883` and the TLS certificate will be available on the path [./mqtt/certs/](./mqtt/certs/). The script will also create a network to connect the container with the MQTT Broker and the client.
 
 ## Create a new client from a file 
-The `init.sh` when started it self generate all the necessaries certificates and authentication data to run a client from the `.client`files. Infact if necessary it's possible to generate a new client at the moment of starting of the application. It's just need to add a `*.client` file in the directory `mqtt/certs/clients/` and where `*` is the unique name of the client. And  In this repo there are two clients just for example as can be seen in the following path [`mqtt/certs/clients/`](./mqtt/certs/clients/). In case of necessity to generate a neew client once the container is started, run the following command:
+The `init.sh` when started it self generate all the necessary certificates and authentication data to run a client from the `.client`files. In fact if necessary it's possible to generate a new client at the moment of starting the application. It just needs to add a `*.client` file in the directory `mqtt/certs/clients/` where `*` is the unique name of the client. And  In this repo, there are two clients just for example as can be seen in the following path [`mqtt/certs/clients/`](./mqtt/certs/clients/). In case of necessity to generate a new client once the container is started, run the following command:
 
 ```bash
 ./init.sh user_add_from_file <FILE_CLIENT>
 ```
 
-Where `<FILE_CLIENT>` is the path of the file that contains the client data. The file must be in the format of the `.client` file. The script will generate the necessary certificates, in the same directory of the client file, and authentication all the data to run the client. The contents of the client file must be in the following format:
+Where `<FILE_CLIENT>` is the path of the file that contains the client data. The file must be in the format of the `.client` file. The script will generate the necessary certificates, in the same directory as the client file, and authenticate all the data to run the client. The contents of the client file must be in the following format:
 
 ```config
 /C=IT/ST=Italy/L=Italy/O=Example/OU=Client/CN=email@example.com;example;Secure[;100]
 ```
 
 Where the values are separated by the character `;`. The fields are the following: 
-- First field are the data necessary to generate the client certificate
+- First field is the data necessary to generate the client certificate
 - Second field is the username of the client
 - Third field is the password of the client
 - Fourth field is the validity period of the client certificate in days. This field is optional and the default value is 365 days.
 
-PS. Save the `.client` file with the same name of the username of the client. This is necessary to the script to delete the client data when a client is removed. 
+PS. Save the `.client` file with the same name as the username of the client. This is necessary for the script to delete the client data when a client is removed. 
 
 ### Example of adding a new client from a file
-To add a new client from a file, run the following command that use a file `add.client` that is available in the main directory like example:
+To add a new client from a file, run the following command that uses a file `add.client` that is available in the main directory like example:
 
 ```bash
 ./init.sh user_add_from_file add.client
 ```
 
-The script will generate the necessary certificates and authentication all the data to run the client. 
+The script will generate the necessary certificates and authenticate all the data to run the client. 
 
 All certificates and data of the client will be saved in the directory `mqtt/certs/clients/` and the certificates will be available in the directory `mqtt/certs/clients/<USERNAME>/`.
 
 ## Add a new client from the command line
-To add a new client to the MQTT Brocker, run the following command:
+To add a new client to the MQTT Broker, run the following command:
 
 ```bash
 ./init.sh user_add_from_CLI <USERNAME> <PASSWORD> <SUBJECTS> [<VALIDITY>]
 ```
 
-Where `<USERNAME>` is the username of the client, `<PASSWORD>` is the password of the client, `<SUBJECTS>` are the info necessary for certificates.  The fouth variable is an optional. This is used to set a validation time in days for the user's certificates. Default is set to 365 days. The script will generate the necessary certificates and authentication all the data to run the client. 
+Where `<USERNAME>` is the username of the client, `<PASSWORD>` is the password of the client, `<SUBJECTS>` are the info necessary for certificates.  The fourth variable is optional. This is used to set a validation time in days for the user's certificates. The default is set to 365 days. The script will generate the necessary certificates and authenticate all the data to run the client. 
 
 ## Remove a client
-To remove a client from the MQTT Brocker, run the following command:
+To remove a client from the MQTT Broker, run the following command:
 
 ```bash
 ./init.sh user_del <USERNAME>
@@ -147,13 +147,13 @@ Where `<USERNAME>` is the username of the client. The script will remove all the
 
 
 ## Test the application
-To test the application, it's possible to use the client `mosquitto_sub` that is available thanks the apt package `mosquitto_clients`. To start the client, run the following command:
+To test the application, it's possible to use the client `mosquitto_sub` that is available thanks to the apt package `mosquitto_clients`. To start the client, run the following command:
 
 ```bash
 mosquitto_sub -h localhost -p 8883 -u example_user -P 'insecure' --cafile mqtt/certs/ca/ca.crt --cert mqtt/certs/clients/example_user/example_user.crt --key mqtt/certs/clients/example_user/example_user.key -t /world
 ```
 
-Through this command is created a subcriber that listen on the topic `/world` and print the messages that are published on this topic. To publish a message on the topic `/world`, run the following command:
+Through this command is created a subcriber that listens on the topic `/world` and prints the messages that are published on this topic. To publish a message on the topic `/world`, run the following command:
 
 ```bash
 mosquitto_pub -h localhost -p 8883 -u example_user -P 'insecure' --cafile mqtt/certs/ca/ca.crt --cert mqtt/certs/clients/example_user/example_user.crt --key mqtt/certs/clients/example_user/example_user.key -m hello -t /world
@@ -174,7 +174,7 @@ To restart the application, run the following command:
 
 
 ## Clean the application
-To clean all data that are created by the script including all the crestifications, run the following command:
+To clean all data that are created by the script including all the certifications, run the following command:
 
 ```bash
 ./init.sh deep_clean
@@ -186,7 +186,7 @@ If it's necessary to clean only the `mounted_volumes`, run the following command
 ./init.sh clean
 ```
 
-If it's necessary to clean only the container and the network, run the following command that run `docker compose down`:
+If it's necessary to clean only the container and the network, run the following command that runs `docker compose down`:
 
 ```bash
 ./init.sh stop
