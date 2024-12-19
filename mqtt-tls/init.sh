@@ -370,8 +370,9 @@ function start {
         nohup docker compose up -d &
         log "start - Application Started - VERSION $GIT_VERSION"
     else
-        log "start - Already running" $WARNING
-        docker compose ps
+        log "start - Container already exixts" $WARNING
+        log "start - Start manually the container with the docker container start $DOCKER_CONTAINER_NAME" $INFO
+        docker compose ps -a
         false
     fi
 }

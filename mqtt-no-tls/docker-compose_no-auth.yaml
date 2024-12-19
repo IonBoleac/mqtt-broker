@@ -1,0 +1,9 @@
+name: mqtt-no-auth
+services:
+  mqtt-no-auth:
+    container_name: mqtt-no-auth
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mounted_volumes/mqtt-no-auth/config:/mosquitto/config:rw
