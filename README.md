@@ -9,6 +9,23 @@ In this repo are some examples of running the MQTT Broker with and without TLS i
 | **[/mqtt-tls/README.md](./mqtt-tls/README.md)** | File that contains the instructions to run the MQTT Broker over TLS |
 | **[/mqtt-no-tls/README.md](./mqtt-no-tls/README.md)** | File that contains the instructions to run the MQTT Broker without TLS |
 
+
+## Simplified Instructions Usage
+Run the following command to clone the repository:
+
+```bash
+git clone https://github.com/IonBoleac/mqtt-broker.git
+```
+
+After cloning the repository, go to the `mqtt-tls` or `mqtt-no-tls` directory and follow the instructions in the respectively `README.md` file. Otherwise, you can run the following script:
+
+```bash
+./run_app.sh
+```
+
+Using the bellow script, you may run interactively the prefered MQTT Broker. The script will ask you to choose between the MQTT Broker with or without TLS. After choosing, the script will run the MQTT Broker in a Docker container.
+
+
 # License
 This work is licensed under a
 [Creative Commons Attribution 4.0 International License][cc-by].
